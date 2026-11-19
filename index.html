@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Corre que te pío — juego de cartas online</title>
+  <meta name="description" content="Corre que te pío: el juego de cartas online de huevos, sabotajes y reacciones para 2 a 10 jugadores.">
+  <meta name="theme-color" content="#0b1b4a">
+  <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══ MENÚ ═══ -->
+  <section class="screen active" id="screen-menu" aria-label="Menú principal">
+    <div class="menu-wrap">
+      <div class="hero">
+        <h1 class="logo" aria-label="Corre que te pío"><span>CORRE QUE</span><span>TE PÍO</span></h1>
+        <div id="menu-chick"></div>
+        <p class="tagline">Pon huevos, róbaselos a los demás y que no te pillen.</p>
+      </div>
+      <div class="panel">
+        <label class="field"><span>Tu nombre</span><input class="input" id="in-name" maxlength="16" autocomplete="nickname" placeholder="Pollito"></label>
+        <div class="field"><span>Tu avatar</span><div class="avatars" id="avatars" role="group" aria-label="Elige avatar"></div></div>
+        <div class="menu-actions">
+          <button class="btn primary" id="btn-quick">Partida rápida</button>
+          <button class="btn blue" id="btn-create">Crear sala privada</button>
+          <div class="join-row">
+            <input class="input code" id="in-code" maxlength="5" placeholder="CÓDIGO" aria-label="Código de sala" autocapitalize="characters" autocomplete="off">
+            <button class="btn" id="btn-join">Unirme</button>
+          </div>
+        </div>
+        <div class="pub-list" id="pub-list"></div>
+        <div class="menu-links">
+          <button class="btn small" id="btn-rules">Cómo se juega</button>
+          <button class="btn small" id="btn-tutorial">Ver tutorial</button>
+          <button class="btn small" id="btn-settings">Ajustes</button>
+          <button class="btn small" id="btn-cards">Las cartas</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ LOBBY ═══ -->
+  <section class="screen" id="screen-lobby" aria-label="Sala de espera">
+    <div class="lobby-wrap">
+      <div class="panel">
+        <div class="room-code"><div><div class="hint">Código de la sala</div><b id="lb-code">·····</b></div>
+          <div style="display:grid;gap:6px"><button class="btn small" id="btn-copy-link">Copiar enlace</button><button class="btn small" id="btn-copy-code">Copiar código</button></div></div>
+        <div class="members" id="lb-members"></div>
+        <p class="hint" id="lb-info"></p>
+        <label class="switch hidden" id="lb-public-row"><input type="checkbox" id="lb-public"> Sala pública (aparece en «Partida rápida»)</label>
+        <div class="lobby-foot" style="margin-top:14px">
+          <button class="btn" id="btn-lb-leave">Salir</button>
+          <button class="btn primary" id="btn-start">Empezar partida</button>
+        </div>
+      </div>
+      <div class="panel chat" id="lb-chat-panel">
+        <h3 style="margin:0 0 8px;font-family:var(--font-display)">Chat</h3>
+        <div class="chat-list" id="lb-chat"></div>
+        <div class="emoji-bar" id="lb-emojis"></div>
+        <form class="chat-form" id="lb-chat-form"><input class="input" maxlength="160" placeholder="Escribe un mensaje…" aria-label="Mensaje" autocomplete="off"><button class="btn small primary">Enviar</button></form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PARTIDA ═══ -->
+  <section class="screen" id="screen-game" aria-label="Partida">
+    <header id="hud">
+      <button class="btn icon" id="btn-menu" title="Salir de la partida" aria-label="Salir de la partida">⬅</button>
+      <div class="grow"><div id="turn-label">—</div></div>
+      <span class="hud-chip" id="goal-chip">Meta <b>5</b> 🥚</span>
+      <span class="hud-chip" id="room-chip">Sala <b></b></span>
+      <button class="btn icon" id="btn-hud-rules" title="Reglas" aria-label="Reglas">📖</button>
+      <button class="btn icon" id="btn-hud-settings" title="Ajustes" aria-label="Ajustes">⚙️</button>
+      <button class="btn icon" id="side-toggle" title="Chat y registro" aria-label="Chat y registro">💬<span class="dot hidden" id="chat-dot"></span></button>
+    </header>
+    <div id="game-body">
+      <div id="main">
+        <div id="table">
+          <div id="felt"></div>
+          <div id="mods"></div><div id="dir">↻</div>
+          <div id="seats"></div>
+          <div id="center">
+            <div class="pile" id="deck"><div class="card flipped"><div class="face back"><span>🥚</span></div></div><div class="card flipped"><div class="face back"><span>🥚</span></div></div><div class="card flipped"><div class="face back"><span>🥚</span></div></div><div class="pile-label" id="deck-label">Mazo</div></div>
+            <div id="play-zone"></div>
+            <div class="pile" id="discard"><div class="pile-label" id="discard-label">Descarte</div></div>
+            <div id="react-box" class="hidden"></div>
+          </div>
+          <div id="banner"></div>
+        </div>
+        <div id="bottom">
+          <div id="me-bar"></div>
+          <button class="btn primary" id="end-turn">Terminar turno</button>
+          <div id="hand" role="list" aria-label="Tu mano"></div>
+        </div>
+        <div id="preview" class="hidden"></div>
+        <div id="intro" class="hidden"></div>
+        <div id="mascot"></div>
+      </div>
+      <aside id="side">
+        <div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="true" data-tab="chat">Chat<span class="dot hidden" id="tab-dot"></span></button><button class="tab" role="tab" aria-selected="false" data-tab="log">Registro</button></div>
+        <div class="chat" id="tab-chat"><div class="chat-list" id="g-chat"></div><div class="emoji-bar" id="g-emojis"></div>
+          <form class="chat-form" id="g-chat-form"><input class="input" maxlength="160" placeholder="Escribe un mensaje…" aria-label="Mensaje" autocomplete="off"><button class="btn small primary">Enviar</button></form></div>
+        <div id="log" class="hidden" aria-live="polite"></div>
+      </aside>
+    </div>
+  </section>
+</div>
+
+<div class="conn wait" id="conn"><i></i><span>Conectando…</span></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="modal-root"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>
